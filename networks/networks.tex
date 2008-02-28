@@ -1,0 +1,177 @@
+\chapter{Networks}
+\label{CHAPTER:NETWORKS}
+\centerline{\rule{149mm}{.02in}}
+\vspace{2cm}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Introduction and Overview}
+
+\subsection{A Marketplace For The Grid}
+
+A marketplace is traditionally a location at which traders meet to trade. Many
+factors have contributed over time to the formation of marketplaces. For
+example, social factors like language and culture, or geographical factors such
+as presence or absence of natural resources and ease of travel and
+transportation, can affect the trading relationships in a market.  Technology
+has played a pivotal role in this area, and the 20th century saw
+sweeping changes in the way in which marketplaces occur. The advent of the
+internet has impacted markets hugely, as now there are few geographical limits
+on potential trading partners and opportunities.
+
+Whereas before markets needed to have central locations to facilitate
+communication between traders, modern communication technology allows for
+potentially anybody to trade with anyone else.  This has the effect of
+decentralising marketplaces in terms of geography to some degree. Centralised
+marketplaces are still useful for communication and trading, but they are now
+no longer as necessary as they once were. This suggest the possibility of
+building a decentralised market place on the internet for use with grid
+systems.
+
+One aspect of marketplaces that has not changed is the fact that trading is
+still a human activity (for the moment). This implies trading relationships
+that are based on underlying social interactions between people. The network of
+interactions between human traders is therefore a social network.
+
+In this chapter, we examine various networks including social networks in order
+to develop a suitable virtual marketplace for allocation on grid systems. We
+look at recent development in network theory, particularly statistical analysis
+of networks. We also look at different types of network, particularly social
+networks, which form the basis of real world market places. We are particularly
+interested in whether or not the properties of social networks make for more
+efficient marketplaces. For reference see \cite{net-newman03-networks} for a
+full review of network theory, from which much of this chapter has been
+distilled.
+
+\section{Network Characteristics}
+
+A network is simply a set of nodes (vertices) connected by some number of links
+(edges). The London tube map is an excellent example of a network, with each
+station being a node and each section of tube line being an link. The possible
+connection topologies for even a small number of nodes is very large.
+
+\subsection{Statistical Analysis}
+
+Large networks are complex to analyse. Beyond a few hundred nodes, simple
+visualisation techniques are generally unhelpful for analysis. Network theory
+uses statistical analysis of large networks in order to properly understand
+their structure and behaviour. Some of the key properties are defined below.
+
+\begin{itemize}
+  
+  \item Degree: the number or links a node has. A network's mean degree and
+    degree distribution can be key indicators of the properties of that
+    network. 
+    
+  \item Degree Correlation: the correlation of linked nodes' degrees can be a
+    useful measure also. A high degree correlation indicates a well connected
+    node is connected to other well connected nodes, and a low degree
+    correlation indicates the opposite, that a highly connected node is
+    connected to badly connected nodes.
+
+  \item Path Length: number of links on the shortest path between any two
+    nodes. Of particular interest is the average path length for a network,
+    which is an indication of how fast information can spread between nodes.
+  
+  \item Transitivity: also called clustering, it represents the probability a
+    node's linked nodes are also linked. Measured as a clustering co-efficient
+    $C$ which is the mean proportion of maximum possible linked neighbour nodes
+    clustering coefficient measures the probability that your friends will be
+    friends with each other on a given network.
+
+\end{itemize}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\section{Types of Network}
+
+
+\begin{itemize}
+  
+  \item Random Networks.\\
+    
+    The classic basic random network is Erd{\"{o}}s and
+    R{\'{e}}nyi's\cite{net-erdos59-random} random graph. This is defined by the
+    probability $p$ that any two nodes are connected. These networks typically
+    have a small average path length and low transitivity. These types of
+    networks are useful as a base with which to compare other networks.
+
+  \item Regular Networks.\\
+
+    A regular network has a uniform structure of links for each node. For
+    example, a two dimensional lattice where each node has a link to its north,
+    south, east, and west neighbours. Another common regular networks is a ring,
+    where the nodes are placed in a ring and each node is connected to the
+    nodes on either side of it in the ring. The are simple to visualise and
+    understand. 
+
+  \item Small World Networks.\\
+    
+    First formalised in \cite{net-watts98-smallworld},
+    small world networks are based on a regularly connected network, such as a
+    grid or ring, and randomly rewiring some proportion of links. This
+    maintains the high transitivity of the original regular network, while
+    significantly lowering the average path length.  Named after the ``small
+    world`` effect, the idea any two people can be linked one to the other
+    via a short number of other people (network hops).
+    
+  \item Scale Free Networks.\\
+
+    In a regular lattice network, for example, each node has a degree of 4, and
+    the degree distribution is therefore uniform.  However, in many real world
+    networks, the degree distribution is not uniform. Barab{\'{a}}si and Albert
+    \cite{net-barabasi99-scaling} showed that networks with an exponential
+    degree distribution exhibited similar characteristics as small world
+    networks, such as high transitivity and low average path length, with the
+    additional property of negative degree correlation.  They proposed a
+    preferential attachment algorithm for creating such networks, in which a
+    new node joining the network is more likely to connect to a well connected
+    network than a poorly connected one.  In a sense, scale-free networks are
+    in part hierarchical, with high degree nodes at the top of the
+    hierarchy, and low degree nodes at the bottom. The internet and the World
+    Wide Web are good examples of scale-free networks, and show the scalability
+    advantages of such topologies. 
+
+  \item Social Networks.\\
+    
+    Social networks have traditionally been hard to quantify. In recent years,
+    examples of networks such as high school student friendships and scientific publication
+    collaborations have been available to study and have allowed interesting
+    insights. Newman and Park\cite{net-newman03-social} show that social
+    networks have a particularly unique combination of properties, high
+    transitivity (your friends are also friends) and high degree correlation
+    (popular people know other popular people, loners know other loners). This
+    type of network is particularly relevant to this study as economic networks
+    are base on social networks. However, a social network may not be the best
+    topology for an online market - other topologies may be more efficient,
+    but previously have not been feasible to implement.
+
+\end{itemize}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\section{A Grid Marketplace}
+
+An online grid market place requires an underlying network of trader
+relationships to function. Random, small world, scale-free and social network
+topologies all have properties that maybe useful in implementing a market.  A
+previous study \cite{net-noble04-information} to this investigated the effects
+of topology on a simple economic market, using small world and scale free
+networks. BitTorrent \cite{net-cohen03-bittorrent} utilises random networks to
+great effect in achieving scalable bandwidth distribution. It was found that
+small world and scale free networks had regions in the space of their construction
+parameters that provided a better transmission of information, which is a
+starting point for our investigations. Social networks have not been deeply
+investigated when it comes to computational economics, so that is a
+potential avenue to pursue.
+
+In addition to the information transmission aspect of a topology, our focus on
+a real world problem like resource allocation on a grid brings in performance
+questions. How high a degree can an individual node support before the
+communication cost become two large? Can the topology used increase affect
+value? These are additional factors to explore in our investigation.

@@ -1,0 +1,113 @@
+\chapter{Conclusions and Further Work}
+\label{CHAPTER:CONCLUSION}
+\centerline{\rule{149mm}{.02in}}
+\vspace{2cm}
+
+
+\section{Conclusions}
+
+\subsection{Objectives}
+
+In this thesis, we have achieved the following objectives, as outlined in
+Chapter \ref{CHAPTER:INTRO}.
+
+\begin{itemize}
+
+  \item We provide a detailed description of economic mechanism, and have
+    examined their suitability for use in a grid environment.
+    
+  \item We have proposed a fully decentralised economic allocation mechanism for
+    grid systems.
+
+  \item We have implemented a suitable simulation tool and uses it 
+    for examining our proposed mechanism.
+
+  \item We implemented and analysed functionality and performance of the proposed
+    allocation mechanisms in simulation.
+
+\end{itemize}
+
+Whilst the basic mechanism proposed here has some drawbacks, it is a first step
+towards producing such systems. There is much that could be done to improve the
+system, which is outline in section \ref{SEC:CONC:FW}
+
+\section{Thesis Contribution}
+
+We propose a novel fully decentralised system for resource allocation on grid
+systems, using an economic metaphor. We have shown that this is a feasible
+option for such a scheme, and in key aspects such as scalability, it has
+advantages over the current centralised approach. While there are many areas of
+improvement the may be needed to make such a system a suitable solution, we
+have carried out initial exploratory work and laid a foundation for future
+development.
+
+We also explored the application of basic network theory to the concept of
+trading networks, which has not been extensively investigated, particularly at
+large network sizes.
+
+\section{Further Work}
+\label{SEC:CONC:FW}
+
+\subsection{Other Allocation Mechanisms}
+
+To further understand the degree which the quality of the allocation maybe
+sub-optimal, a comparison would need to be made to the theoretically optimal
+solution. This would require extending the simulation to calculate the optimal
+allocation, ideally side by side with the economic system. Additionally, it would
+also be of value to compare with the equivalent centralised approach for this
+grid model, both the allocation and system performance. This would require the
+implementation of an aggregated central grid registry similar to existing grid
+systems.
+
+\subsection{Grid Model}
+
+The grid model could refined  to include aspects we have not discussed her. An
+obviously useful addition would be the inclusion of a system for estimating job
+execution times, with some mechanism for error. This estimated completion time
+could be added into the trading mechanism as an additional price metric, with a
+deadline being the effective limit price. This would allow buyers to prioritise
+on price of time depending on their needs.
+
+Additionally, the notion of a fixed Job size could be relaxed, and Jobs could
+be allowed to run on less resource capacity but take longer to complete, or on
+more capacity for a faster completion time. As not all applications are easily
+altered in this manner, a scalability factor could be introduce to represent
+this. A scalability of one could indicate that a job is trivially parallel and
+can easily run on more or less resource for a linear adjustment in execution
+time. A scalability of zero would mean that a job cannot be run on more or less
+resource at all, with value in between modifying the estimated execution accordingly
+
+\subsection{Economic Market}
+
+The sealed bid auction is simple to implement, which is the reason is has been
+used in this study. However, the CDA has some very attractive properties, and
+could potentially out perform the sealed bid auction, although it would also
+require a greater degree of communication. Additional potential auction
+mechanism that may be of value to investigate are Dutch and retail auctions.
+
+While it is interesting that ZI traders can still perform well in this system,
+reinforcing the original concept, they are clearly sub-optimal. A simple
+expansion would be to include ZIP and GD based mechanisms for estimating market
+price. Given the limitations of ZI with respect to non-standard market
+conditions, this would be an important addition if different market conditions
+are used.
+
+The markets so far have been static, with fixed demand and supply and a static
+seller base. Real grid systems would need to adapt to changes in demand and
+supply, and with sellers and their resources appearing and disappearing. The
+ability of the market to recover after a shock would be an important
+requirement for a real grid system. This would also highlight the differences
+between the different auctions mechanisms.
+
+
+\subsection{Network Topologies} 
+
+The network in our study is fixed statically at the start of the simulation. In
+a real grid environment, nodes could be leaving and joining the network at any
+point. This would require the development of algorithms to attach and detach
+nodes from a network, whilst still maintain the topological structure desired.
+
+The calculation of the network statistics describe in chapter
+\ref{CHAPTER:NETWORKS} would be a useful addition, potentially allowing further
+insight into the effects of the various topologies.
+

@@ -1,0 +1,69 @@
+\documentclass[12pt,a4paper]{report}
+
+% Use the following to selectively exclude chapters
+%\includeonly{cover,abstract,acknowledge,declare,chapter1,chapter2}
+
+% Package for figures
+\usepackage[pdftex]{graphicx}
+\usepackage{fancyhdr}
+\usepackage{setspace}
+\usepackage{times}
+\usepackage{mathptmx}
+
+%Plonk citations together and reorder
+\usepackage{cite}
+
+% Various parameters
+\setlength{\textheight}{229mm}
+\setlength{\topmargin}{-5.4mm}
+\setlength{\textwidth}{150mm}
+\setlength{\oddsidemargin}{14.6mm}
+\setlength{\evensidemargin}{14.6mm}
+
+\setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{4}
+
+\onehalfspacing
+
+\begin{document}
+
+\include{cover}          % This is the front page
+\include{abstract}       % Apstract
+\include{acknowledge}    % Acknowledgements
+%\include{declare}        % (optional) - declarations of previous papers
+\tableofcontents
+%\listoffigures
+%\listoftables
+\newpage
+
+% Set up page numbering
+\pagenumbering{arabic}
+\pagestyle{fancy}
+\fancyhead[L]{\textsl{\chaptername\ \thechapter}}
+\fancyhead[R]{\textsl{\leftmark}}
+\fancyhead[C]{\thepage}
+\fancyfoot[C]{}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\chaptermark}[1]{\markboth{#1}{}}
+
+% include the chapters
+\include{intro/intro}
+\include{grid/grid}
+\include{economics/economics}
+\include{networks/networks}
+\include{method/method}
+%\include{auctions/auctions}
+%\include{agents/agents}
+%\include{market/market}
+\include{results/results}
+\include{conclusions/conclusions}
+%\addcontentsline{toc}{chapter}{\numberline { }Appendices}
+\appendix
+\include{appendix/appendix}
+
+% include the bibliography
+\bibliographystyle{plain}
+\addcontentsline{toc}{chapter}{\numberline { }Bibliography}
+\bibliography{thesis}
+
+\end{document}

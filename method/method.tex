@@ -1,0 +1,524 @@
+\chapter{Methodology}
+\label{CHAPTER:METHOD}
+\centerline{\rule{149mm}{.02in}}
+\vspace{2cm}
+
+
+\section{Overview}
+
+Ideally, a real world implementation of a resource allocation system would
+provide the best evaluation of its potential, but is not feasible in for
+several reasons. Firstly, it requires a lot more investment in the
+implementation, as process management and network communication would be
+necessary, and it would also need to be fault tolerant to a greater degree as
+it is running on real hardware. Secondly, and more significantly, it requires
+an actual grid system on which to deploy. While a small grid system may be
+feasible, it would limit the size of experiments run to the size of the actual
+grid. As a particular focus of this work is investigating allocation on as yet
+non-existent larger systems, this would not be a suitable solution. Therefore,
+a simulation of a grid system has been the experimental vehicle for this study.
+This allows us to make many useful abstractions and greatly simplify the grid
+model used, as well as look at arbitrarily large grids
+
+This chapter details this simulation framework and the model of the
+grid hardware, users, jobs, resources and infrastructure. It also explains the
+basic economic model, including the overlay network models. Finally it looks at
+how best to evaluate the performance of such a grid, and reports on an initial
+implementation.
+
+
+\section{The Grid Model}
+\label{SEC:METHOD:GRIDMODEL}
+
+\subsection{Resources and Jobs}
+
+A \textit{Resource} on our model is a representation of a computational
+resource that can be scheduled. We deliberately ignore other types of
+resource for the purposes of this initial investigation.  A Resource
+is modelled by a unit capacity, which represents an amount of work it is
+capable of carrying out simultaneously. Given that parallelisation is the
+dominant factor for achieving greater performance, this is meant to loosely
+represent a number of processors. We make several abstractions here.
+
+\begin{enumerate}
+
+  \item Hardware comes in many different types and with different performance
+    characteristics. Given the growing virtualistion of computing resources,
+    as well as for simplicity, we abstract these details. Thus all processors are
+    modelled as being equivalent in throughput, with the number of parallel
+    units being the primary performance metric.
+
+  \item Software also varies greatly. Again, virtualistion technologies are
+    making this become non-issue as users can bundle their application load in the
+    operating system of their choice. So we assume a Resource can provide
+    whatever software platform a particular application requires.
+
+\end{enumerate}
+
+Closely linked with a Resource, a \textit{Job} represents an amount work to be
+carried out on a grid. This is modelled with a fixed unit size or work, and a
+fixed duration. The size is meant to represent a Job's minimum resource
+requirements, and applies directly to a Resource's capacity. A Job consumes
+it's size of a Resource's capacity when executing on that Resource.  A Job that
+has a larger size than a Resource's free capacity cannot be executed on that
+Resource. This abstraction is made for simplicity, but overlooks two
+key challenges in this area of grid systems. 
+
+\begin{enumerate} 
+  
+  \item It is technically challenging to correctly estimate the actual
+    execution time of a given grid Job.  The user can provide an estimation of
+    a Job's requirements, but it is not guaranteed to be accurate.  However,
+    this problem is not our focus in this work, so we assume that a job
+    describes itself accurately and will run at that size for that duration. It
+    is relatively simple to add a degree of inaccuracy to the Job model at a
+    later date.
+
+  \item In reality, the execution time of a Job is variable. A large job can
+    still be run on a small resource, but will take a very long time to
+    complete. Likewise a small job can potentially be scaled up and be
+    completed faster on a large resource, although this is not as easy as the
+    former, as it may be not able to be parallelised easily. This introduces a
+    completion time into the equation when considering which Resource to run
+    on. While this is feasible option for the model, it has been omitted from
+    the basic model for simplicity. Also, our primary focus is for 'on demand'
+    allocation (see \ref{SEC:GRID:TYPES}).  This means that it is reasonable to
+    assume that the Job description exactly represents the amount of Resource
+    needed, no more or less, at that particular time.  However, completion time
+    is however an important aspect for any allocation system and is discussed
+    in more detail in out results (see Chapter \ref{CHAPTER:RESULTS}).
+
+\end{enumerate}
+
+
+For both Jobs and Resources, we do not consider the storage or network
+bandwidth requirements and availability in our model. We assume that there is
+enough of each to allow the Job to execute successfully. This a reasonable
+assumption given that our titled focus is on computational grids, not storage
+grids.
+
+\subsection{Middleware}
+\label{SEC:METHOD:MIDDLEWARE}
+
+A Job needs to be scheduled and managed on a Resource.  In our model, this is
+represented by a \textit{Middleware} object.  The Middleware is responsible for
+scheduling and managing a Job's execution on its Resource, and is responsible
+for communicating with other Middleware systems as part of the allocation
+process. 
+
+The management of a Job in our simplified model consists of starting the Job
+when successfully allocated and finishing it when completed (it has run for its
+specified duration). In reality, the middleware has to do much more, including
+setting up the Job, monitoring its status (and reporting it to the Job's user)
+during execution, and cleaning up and returning the results when completed. We
+assume this to be automatic in our model, as it is not part of the problem of
+allocation that we are looking at.
+
+The actual local scheduling algorithm used by our Middleware is very simple,
+given the simplicity of our model for Jobs and Resources.  If a resource has
+enough free capacity for a Job, it reports being capable of scheduling it, and
+if is told to do so, simply executes it straight away, and removes it when
+completed. Given that we are not doing any advance reservation or completion
+time modelling, this is as complex as it needs to be. 
+
+The Middleware is a software system assumed to be running on dedicated hardware
+(i.e.  not the Resource itself).  This allows us to model the execution of grid
+Jobs (who's actual performance we are less interested in) separately from the
+execution of the allocation system (which we are interested in).  It's
+performance is modelled by a stochastic distribution (see
+\ref{SEC:METHOD:DISTRIBUTIONS}).  This is intended as a general measure of the
+Middleware's ability to process requests from other Middleware, not necessarily
+the performance of a specific machine. It may be run on a cluster or larger
+machine, but this is simply modelled by increasing the overall performance of
+the Middleware, rather than introducing more complex hardware models, with a
+similar rationale to the section above on our Resource model.
+
+\subsection{Administration}
+
+Our model uses the notion of a grid \textit{Site} to capture the idea of
+diverse ownership of resources. It represents potentially many individual
+resources under one autonomous administrative domain. These resources are not
+necessarily physically co-located, but are owned by the same group or virtual
+organisation.  It is assumed that multiple resources at a site would have a
+faster intra-connection speed between themselves compared to that between
+separate Sites, and thus can be represented as a single aggregated Resource
+consisting of the sum of the capacity of all resources at that Site.  
+
+The Site is the basic location of our simulation, and the basic node in our
+network (see \ref{SEC:METHOD:NETWORK} below). A Site contains a Resource, and a
+Middleware object to manage that resource and all external communication. It
+also acts as an entry point to the grid network for traders, as described in
+\ref{SEC:METHOD:TRADERS} below, allowing them to communicate with other traders
+at other Sites.
+
+
+\subsection{Other Abstractions and Assumptions}
+
+Our model assumes perfect execution or Job's and no Resource or trader failure.
+Fault-tolerance is an important part of any realistic grid allocation solution,
+but is not necessary for the first exploration of an economic system. Real
+economic systems suggest many possible methods to handle a breach of contract,
+but this is outside the scope of this initial investigation.
+
+
+\section{Economic Agent Model}
+\label{SEC:METHOD:TRADERS}
+
+\subsection{The Market - What are we Trading in?}
+\label{SEC:METHOD:COMMODITY}
+
+We are interested in trading a particular amount of the single commodity of
+computational resource. If we were simply modelling as a number of units sold,
+that would be straight forward. However, we are technically hiring the
+resources for a fixed period of time, not a one-off transfer of ownership. This
+changes the unit of resource quantity that traders are quoting for. Our unit of
+commodity is capacity multiplied by time, or processor-seconds. Traders
+consider the price of a quote relative to this value, rather than size or
+duration alone.
+
+
+\subsection{Trader Rationale}
+\label{SEC:METHOD:RATIONALE}
+
+Our model of trader rationale is purposely simplistic, following after Gode and
+Sunder's Zero Intelligence (ZI) trader model\cite{eco-gode93-zi} similar as opposed to
+the Trading Agent Competition (TAC)\cite{eco-wellman99-tac} trader models (see
+section \ref{SEC:ECON:COMP_TRADERS} for a details).  This simplicity derives
+from our interest in the performance of the system as a whole as opposed to the
+relative competitive performance of individual agents. Additionally, the TAC
+agents are designed for a specific market and commodity, with particular
+dynamics, whereas Gode and Sunder's ZI traders are general to any market, due
+to their complete lack of strategy.
+
+The main attribute of a trader in our model is simply a limit price. This is
+the price a seller won't go below, and a buyer won't go above. For the baseline
+agent, we implement the Gode and Sunder's ZI-C method\ref{SEC:ECON:ZI}. This
+means the agents bid randomly between their limit price and a system maximum
+(for sellers) or minimum (for buyers) price. This is designed to and act as a
+baseline comparison for different auction systems, trader models, and network
+topologies.
+
+To improve upon this basic model, we follow the work inspired by the original
+ZI traders. This allows us to keep our simplistic approach, but hopefully
+improve the performance and adaptability of the system. The main algorithm used
+to is Cliff's Zero Intelligence Plus (ZIP) algorithm (see \ref{SEC:ECON:ZI} for
+details).  This applies simple learning rules to the basic ZI-C model and have
+some form of memory, to calculate an estimate of the correct bid. 
+
+These bidding algorithms are computationally trivial, so we model the process
+of both the Buyers and the Sellers as integrated with the Middleware, with the
+same performance characteristics. If more computationally demanding trading
+algorithms were used, we would need to model them separately, however.
+
+\subsection{Buyers and Sellers}
+
+A \textit{Seller} object in our model represents a Site and its Resource.  A
+\textit{Buyer} object represents a Job. Both are located at a particular site,
+with a single Seller trading the Site's Resource, and multiple Buyers using the
+Site as their grid entry point. We could model the Buyers as separate 'Buyer
+only' nodes on the grid network, but our network model (see
+\ref{SEC:METHOD:NETWORK}) is static, so we link the Buyers to a Site. 
+
+There is a major difference between Buyers and Sellers; Sellers are long running
+process, linked to a specific resource, whereas a new Buyer is instantiated for
+each new Job in the system. In theory, this puts the Buyers at a disadvantage
+when they start to trade, as they have not been participating in recent trade
+and are thus unaware of the current market state.  Therefore, when a buyer is
+created for a new Job, we assume that it has been observing the market while
+not actively trading, and is aware of recent transactions. To facilitate this,
+we keep track of recent transactions and instantiate new Buyers with this
+information.
+
+
+\subsection{Auction Rules}
+\label{SEC:METHOD:RULES}
+
+The defining element to our design of auction rules is the need for a
+decentralised auction system. This places some large constraints on the
+practicality of many normal auctions. Some auction mechanisms rely on a central
+arbiter, which we are looking to avoid to achieve scalability, or assume all
+interested parties can hear all quotes in the market (i.e. they are in the same
+place). The nature of our network (our market place) means we cannot guarantee
+that all traders will hear all the quotes for an auction, as it is not an all
+to all system.
+
+An English auction assumes that all buyers are able to hear all other buyers
+quotes, usually facilitated by an auctioneer. In theory, a seller could act as
+this auctioneer if all buyers are still able to hear the quotes.  In our model,
+the Seller could take on the responsibility of doing this, and broadcast the
+quotes to all interested buyers. However, we couldn't guarantee the Seller
+would not attempt to alter the quotes in their favour somehow, possibly
+reporting different quotes to different buyers. This would effectively be a
+kind of double-auction, but with dishonest trading. While this make work if
+Buyer's are still willing to accept the falsified quotes, it would undermine
+the auction mechanism and could have unknown dynamics. As such, we do not use
+this mechanism in this study.
+
+As discussed in \ref{SEC:ECON:AUCTIONS}, a Vickery auction is semantically the
+same as an English auction in terms of results. It will not work in a
+decentralised setting however, as there is no incentive for the trader not to
+accept the best quote at the best quote's price, rather than at the second best
+quote's price. 
+
+In theory, a posted price auction could be used. However, given no central
+location to post static prices, the Sellers would have to actually quote
+individually to each trader, thus losing the potentially useful scalable aspect
+of such auctions.
+
+Of the auction mechanisms discussed in \ref{SEC:ECON:AUCTIONS}, the CDA and the
+sealed bid auctions can be easily used in a decentralised setting.  The CDA's
+ability to quickly adapt to market changes is also of key importance to the
+system as a whole, and fits very well with a decentralised model, as it is used
+in similar settings. A sealed bid auction allows for private bids, which the
+Dutch and CDA do not.  This suits a diversely owned grid environment where
+traders naturally may prefer to bid privately. Its implementation is also very
+simple. The sealed bid auction mechanism is used as the base mechansim for this
+study, given its simplicity.
+
+
+\section{Economic Communication Model}
+\label{SEC:METHOD:NETWORK}
+
+In this section we define a model of a grid ``marketplace'' in which an economic
+system can conduct its business.
+
+\subsection{Trader Relationships}
+\label{SEC:METHOD:RELATIONSHIPS}
+
+In the real world, trading usually occurs around a specific physical location,
+such as a city street, a specific event somewhere like a farmer's market, or
+special purpose venue like the London Stock Exchange.  These locations provide
+meeting place for traders to conduct business with other traders. They may not
+trade with every trader present at such a location, but will form relationships
+with other traders that they can try and sell to or buy from.
+
+With a decentralised grid system, we do not have a centralised location. All
+traders are connected to the internet, and could in theory trade with any and
+all other traders. However, all-to-all communication for any significant number
+of traders would quickly become impractical. It may be possible to have a
+number of central ``trading floors`` that could provide a central point of
+contact, and this has some real world examples, such as the various stock
+exchanges around the world. But we are then moving towards a more centralised
+approach, which we have set out to avoid.
+
+We need to define which traders a particular trader knows about and can trade
+with. Ideally this need to be as many traders as is it is feasible to
+communicate with over the internet. We model this with an overlay network
+between traders, commonly called a peer-to-peer network. A node in the network
+is a Site with both Buyers and Sellers, and a link between any two sites
+indicates that the Sites (and their respective traders) know each other, and
+have a potential trading relationship. This attempts to capture the
+relationships between traders in a scalable manner, allowing trade to occur
+between traders that are linked to each other.
+
+
+\subsection{Network Topology}
+
+The topology of this network is a key area of study. The topology could
+potentially affect the efficiency of the market, and its degree of scalability
+and penetration.
+
+As an initial baseline topology, we use a modified version of Erd{\"{o}}s and
+R{\'{e}}nyi's\cite{net-erdos59-random} classic random graph. We modify
+it because we have some real world constraints on our system, and we are not
+interested in random graphs per se, but in utilising them for a basic economic
+system. 
+
+This basic network is generated in two stages. First, we iterate through all
+nodes and link them to one uniformly randomly chosen other node, thus ensuring
+that each node has at least one link.  We are not interested in having orphan
+nodes that have no links to any other node. We then choose two node's at random
+and link them together. If the mean degree is sufficiently large (about 8 or
+more), this guarantees the vast majority of nodes are part of a single giant
+component, as opposed to several discrete components. This is important as we
+wish to explore a single market dynamic, and two separate components would have
+separate supply and demand and be difficult analyse.
+
+This random network is our base network for testing the performance of the
+system, and is very similar to some of the peer-to-peer generated networks in
+use today\cite{net-cohen03-bittorrent}. We look at generating and examining the
+effect some of the other topologies discussed in chapter \ref{CHAPTER:NETWORKS}, such
+as small-world and social networks.
+
+\section{Evaluation}
+\label{SEC:METHOD:EVALUATION}
+
+\subsection{Metrics}
+
+In order to asses the performance of the allocation system, we need to record
+various results they produce. We have two main performance aspects to
+consider, the performance of the grid allocation scheme itself, and the
+efficiency of the market created.
+
+To measure the grid's performance, we use the following metics
+
+\begin{enumerate}
+
+  \item Mean Resource utilisation - the ratio of usage of resources across the
+    whole grid.
+
+  \item Mean Middleware utilisation - the ratio of business of
+    the Middleware servers, as a measure of the cost of all the communication
+    costs
+
+  \item Mean Middleware queue size and delay - what delay is added to the
+    auction process by overload Middleware.
+
+  \item Allocation success/failure rate - ratio of Job's that were
+    successfully/unsuccessfully allocated
+
+  \item Mean allocation time - length of time taken to successfully or
+    unsuccessfully allocate a Job
+
+
+\end{enumerate}
+
+For evaluating the market we can use many of the standard measures used to
+analyse market performance.
+
+\begin{enumerate}
+
+  \item Trader utility - average traders profit/savings?
+
+  \item Market Efficiency - derived from Smith's\cite{eco-smith62-competitive}
+    $alpha$ measure of market efficiency. 
+
+  \item Speed of adaptation to market equilibrium - the length of time take to
+    find equalibrium.
+  
+  \item Market Surplus - The over or under supply of resource.
+
+\end{enumerate}
+
+%\subsection{Comparison}
+
+%In order to correctly assess the performance of an economic grid allocation
+%system, we need to compare its performance with other allocation systems. We
+%use two such comparison systems that do not use an economic allocation
+%mechanism, but a centralised one.
+
+%We implement theoretically ideal system, which has a central allocator with a
+%100\% accurate knowledge of the current state of the grid. This accurate
+%knowledge allows it to optimally place Job's where they would best fit, and is
+%designed to maximise grid utilisation. Such a system is simple to implement in
+%simulation, hence its inclusion, but would be impossible in a real grid. Its
+%serves as a comparison to a theoretically optimal system.
+
+%The second comparison system is a version of the current state of grid
+%allocation schemes. This follows the idea that each Site publishes its own
+%resource state (on request), and a central allocator, periodically requests and
+%amalgamates that information in order too correctly allocate jobs. This incurs
+%all the performance costs of communication between Sites, as well as the grid
+%state inaccuracies due to the communication delays. This is similar to the way
+%that MDS2\cite{grid-czajkowski01-mds2} works, and is aimed at a realistic current day
+%grid implementation.
+
+%Another possibility would be to implement a system that uses an economic
+%mechanism for allocation, but uses a centralised auctioneer to conduct the
+%trading. This would allow a more direct comparison to the decentralised
+%mechanism we are proposing.
+ 
+
+\section{Previous Work}
+
+A previous version of the above model was reported in \cite{davy03-ukpew}.
+This used a similar basic grid model as outlined above, but a different trader
+rationale and network. 
+
+The trader rationale was not designed as a self interested profit-making
+algorithm, but rather as a static system utilisation optimisation function. A
+Seller bid higher a Job size the more the Job's filled its available free
+capacity. Thus the Seller who's Resource that would have maximum utilisation
+would win the auction. A simple sealed bid algorithm was used, with a Buyer
+accepting the lowest of the first three offers that it heard from sellers.
+
+The network examined an earlier idea of the overlay network, which included the
+notion of Sites forwarding Bid information a certain number of times. The idea
+behind this was to extend the 'shout' radius of the quote. This idea has could
+be incorporated into the construction of a social network, linking all the
+Sites that would have received the forwarded message directly to the
+originating Site. Given that we could not trust independent Sites to forward
+quotes that were disadvantageous to them, we did not think this forwarding
+concept was worth pursuing.
+
+As no actual variation or trader variability was used in the trading process,
+this was not really a market-based economy, but more of an experiment in using
+a decentralised overlay network based system for grid allocation. It showed it
+was a feasible approach, even without an actual market economy, proving the
+validity of an overlay network model approach to communicating on a grid
+system.
+
+\section{Implementation}
+
+\subsection{Approximating Reality}
+\label{SEC:METHOD:DISTRIBUTIONS}
+
+As grids are a relatively recent development, and the scale of the challenges
+involved in implementing real world grids, there is little real world data from
+which to chose sensible representations of grid usage and provision. However,
+many similar scheduling and allocation problems have been observed and can be
+utilised here. We rely on \cite{misc-law00-simulation} for much of this section.
+In particular, their discussion of distributions in machine shop scheduling
+are applicable here.
+
+We have several main numerical system aspects to try and accurately model.
+Table \ref{TABLE:METHOD:MEANS} shows the details of major random variate
+distribution and default mean values. 
+
+\begin{table}
+  \begin{center}
+    \begin{tabular}{| l | c | l |}
+      \hline
+      Description & Means & Distribution \\ 
+      \hline
+      Grid Model & & \\
+      \hline
+      Resource capacity	      & 100         & Gamma $(\alpha=0.5)$\\
+      Job size			          & 20          & Gamma $(\alpha=2.0)$\\
+      Job duration	          & 50          & Gamma $(\alpha=2.0)$\\
+      Middleware service time & 0.01         & Normal $(\sigma=0.01)$\\ 
+      Communication latency   & 0.1         & Normal $(\sigma=0.1)$\\
+      \hline
+      Market Model & & \\
+      Buyer limit prices & 500-900  & Uniform \\
+      Seller limit prices & 100-500 & Uniform \\
+      \hline
+    \end{tabular}
+  \end{center}
+
+  \caption{Parameter values for the simulation.  Note that variates from each
+  of the normally distributed variates are resampled if negative.}
+
+  \label{TABLE:METHOD:MEANS}
+\end{table}
+
+Several of these values are interdependent. Job arrival, Resource capacity and
+Job size/duration values dictate a \textit{system load} value.  This variable
+represents the potential maximum resource utilisation. A load of 1.0 indicates
+a situation in which, hypothetically speaking, 100\% of the grid's Resources
+would be in use (assuming a continuous Job distribution instead of discrete).
+We fix the values of Resource capacity and Job size/duration to sensible
+defaults, thus allowing us to alter the Job arrival time as a key parameter to
+define the system load for a simulation run. We can then easily compare the
+system on a variety of load values.
+
+
+\subsection{Technical Details}
+
+This simulation was implemented in C++ to enable quick execution of simulation
+runs. A custom discrete event simulation model, as defined by
+\cite{misc-law00-simulation}, was used as the primary simulation mechanism. A
+polymorphic object oriented messaging system allowed for the easy construction
+of custom messages for each protocol by adding a simple class. The performance
+was good, with a simulation of 5000 nodes at system load of 1.0 for 1000 time
+steps takes about 20 seconds to execute. Larger network sizes consume a large
+amount of memory, but still run adequately if the system has enough RAM to
+avoid thrashing.
+
+
+\section{Summary}
+
+In this chapter we have outlined the basic simulation model and defined various
+key system parameters. In the next chapter, we explain the market process
+and parameters in more detail and present our findings using the metrics
+defined in this chapter.

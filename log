@@ -1,0 +1,304 @@
+Friday 14 November 2003, 16:15:43
+
+Discussion of Simon's upcoming talk at a meeting on Market-Based
+Control, for one of the EPSRC's novel computation clusters.  To be
+held at HP Labs, both of us invited to attend by Dave Cliff.  Seems a
+good way of getting more exposure and feedback for Simon's work.
+In the short term, Simon is going on holiday in Mexico for two weeks;
+he needs to get the workshop talk sorted out before then but otherwise
+is on track.
+
+Recent visit from Fabrice Saffre of BT, a networks researcher, led to
+some useful references for Simon.
+
+Discussion of how to implement the marketplace in Simon's coallocation
+system.  One major continuum for auctions is that between buyers and
+sellers being allowed to bid at different rates (i.e., English auction
+at one end, Dutch auction at the other, continuous double auction in
+the middle).  But if we have a CDA, what implements the "auction room"
+effect, whereby nodes can "hear" the bids made by other nodes?  Our
+current plan involves enforcing a private bid structure because nodes
+have only one chance to bid for the job.  What about a distributed
+temporary auction room system?  Hosting an auction room can itself be
+a kind of job.  Agreement to explore this idea in the next version
+of the simulation, and to test its efficiency compared to the previous
+system.
+
+Discussion of a paper for submission to the Simulation of Adaptive
+Behavior conference: due date Jan 9, conference is in July 2004.
+Originally planning a paper with Dave Cliff, but he had to drop out
+due to time commitments.  Simon and I will write a paper exploring the
+relative effectiveness of different network topologies for the
+efficient transmission of information in two simple tasks.  One task
+is a market full of simple traders, the other task will be a
+communication or social learning task that is yet to be decided.  The
+network topologies will be explored along at least two dimensions.
+One axis is that between random graphs and local structures such as
+regular grids -- small world networks would be somewhere in the middle
+here.  The other axis is that between random attachment rules / flat
+degree distributions and preferential attachment / scale free
+distributions.  Statistics such as degree correlation and transitivity
+will be collected for the networks. 
+
+
+Thursday 4 December 2003
+
+Attended workshop in Bristol at HP labs on market-based control.
+Simon and I discussed aspects of his work on the journey.  
+
+
+Monday 5 January 2004
+
+Meeting to discuss final version of SAB paper, which is due on 9
+January.  Simon gave me comments on the draft version.
+
+
+
+Tuesday  3 February 2004, 14:07:04
+
+Now that conference submissions are out of the way, time for a
+reassessment of where Simon stands in his thesis work.  Apart from
+contributing to the SAB paper, Simon has been working on his code
+through December and January.  
+
+Principles for what Simon needs to do next:
+
+1) rework code (within reasonable time limits) so that bidding
+   mechanisms and network topologies are plugins and can easily be
+   switched around.
+
+2) reaffirm commitment to wide-ranging well-chosen simulation studies
+   rather than a real Grid implementation.
+
+3) redoing the original simulation with the new efficient modular
+   code, bigger networks (on the order of 10,000 nodes), and a
+   comparison of a sealed-price second-bid auction with a CDA-type
+   arrangement.
+
+4) come up with one or more reasonable centralized comparisons for
+   the above architecture.  Despite possible accusations of being
+   unrealistic, one centralized architecture could simply be a star
+   topology for the network.  Another useful comparison will be to
+   reimplement the previous "perfect knowledge" optimal setup.  
+
+5) some thought given to the various cost functions that we want to
+   use.  At the beginning we have used a linear scaling that rewarded
+   well-loaded nodes, and assumed complete commonality of interest
+   across the system.  We eventually want to deal with an open-ended
+   model in which individual, selfish nodes have some plausible cost
+   function, or even a range of cost functions, and then to show that
+   our best architecture makes for a robust system despite the
+   occasional node owner who wants to unfairly exploit the system.
+
+6) network topology ideas: there is a whole range of possibilities
+   here; the SAB paper suggests one or two things.  A major question
+   is how to define the extent of the many overlapping submarkets.
+   The three-hop idea from the original model has promise but wastes
+   time in actually doing the hops.  So one possibility is to use a
+   preferential attachment model to generate a realistic internet-like
+   topology, to fix a hop size (e.g., three) and then to define the
+   market network as being the same nodes plus new links joining any
+   two nodes that are within N hops.  These links could be weighted to
+   reflect communication channels of different speeds and lengths.
+
+7) move towards genuinely generative models in which a new node can
+   come into being and hook up to an established grid in some sensible
+   way.  
+
+8) parameters that need to be settled on for all of the above models.
+   This list goes from basic and critical parameters to the more
+   obscure: distribution of job sizes, job durations, job interarrival
+   times, node size (i.e., the capacity of each node), latency for
+   forwarding bids and offers across a link, the latency for
+   processing a bid or offer and sending out a reply, characteristics
+   of the queue needed to handle incoming messages.
+
+
+Friday 13 February 2004, 13:35:21
+
+Some discussion of work-life balance issues.  Simon has a new resolve
+to put the PhD work first, which is great.  
+
+This week Simon has been working on task (1), above.  Re-working the
+underlying simulation model, re-reading the Law & Kelton textbook.
+Some discussion of ideas about efficient ways to put the various
+simulation events onto the event list.  Is there any time saving in
+finding the minimum-time event just before we need to handle it, as
+opposed to inserting every event at its appropriate position as soon
+as it is generated?  Not clear that this should lead to any efficiency
+gains.  Perhaps if multiple events were being generated with very
+similar time-stamps, because of some broadcast event, there would be a
+time bonus in some clever way of inserting them into the list jointly.
+
+
+Friday 20 February 2004, 13:49:09
+
+Brief update.  Work on redeveloping the basic simulation platform is
+nearing completion.  Some discussion of peripheral issues: a future
+visiting speaker, James Marshall, is interested in talking to Simon
+about social networks research.  Simon has discovered some anti-spam
+work that exploits the concept of network transitivity to spot spam --
+this is a nice application to mention, perhaps.
+
+
+Friday 19 March 2004, 13:18:45
+
+Some of Simon's time has been taken up with teaching commitments
+lately, but that is now starting to tail off.  Time spent on the
+project has been used to redesign the basic simulation code, and to
+re-implement the original simulation using the new clean code (with a
+larger network size).  Results from this work are now imminent.  
+
+Discussion of some ideas that were raised by my presentation of our
+work at BT labs: most relevant to Simon would be the Kleinberg paper
+on how long the shortcuts should be in a small-world network.  
+
+Agreement that the next step after the replication of the original
+model should be the construction of an appropriate small-world overlay
+network (as suggested by our SAB paper results).  The underlying
+all-to-all internet does not need to be modelled precisely; we both
+feel that it will be enough to model this as a distribution of delays
+in message passing, with a very low mean and a long tail.  Simon is
+quite concerned about the problem of how a new node on the network
+makes its initial connections, and to what extent the spatial layout
+of the grid should affect this process.  I agree that this is an
+important issue, but I feel that the best thing to do now is simply to
+start experimenting with the possibilities.
+
+
+Friday 16 April 2004, 13:49:34
+
+Simon continuing to develop the software framework for his models.
+Some delays due to marking work, etc., which Simon is trying to
+reduce.  
+
+Discussion of some network papers I have seen recently talking about
+the complexities of clustering in human social networks.  These papers
+could provide fruitful ideas for grid network structures that Simon
+could explore.  Simon is particularly interested in finding some
+papers on economic network structures as these have obvious
+relevance.  
+
+Question as to how much work is required from here on in before Simon
+would have a respectable thesis.  Discussion has lead to a diagram and
+plan for the finished product as follows:
+
+Ch. 1, introduction
+
+Ch. 2, literature review
+
+Ch. 3, simple initial model, bearing a strong resemblance to the work
+presented at UKPEW, but with the more glaring flaws corrected.
+
+(order of next 3 chapters is arbitrary)
+
+Ch. 4, the economic agents: compare increasingly complex trading
+agents and look at how they affect the overall efficiency of the
+system.  E.g., ZI, ZIC, ZIP, vs. others.
+
+Ch. 5, the network structure: compare a simple preferential attachment
+model (as in ch. 3) with other ideas about how the overlay network
+could be structured, perhaps incorporating recent findings from social
+network research on the effects of cliques and clusters.
+
+Ch. 6, the market structure: compare the original sealed-bid best
+price auction market with other possibilities (e.g., open bid,
+second-price auction, CDA, etc.), drawing on Dave Cliff's work.
+(Possibly use a GA or, if parameters are few in number, a sweep
+through parameter space, to optimize the market -- this method could
+also be used in chapters 4 and 5, processing power permitting.)
+
+Ch. 7, take the agents, network, and market that performed best in
+chapters 4--6, and combine them into an overall model.   Hopefully
+at least show that this combination of the winning ideas performs
+better than the original simple model.
+
+Ch. 8, conclusions, future work, limitations, etc.
+
+
+Friday 14 May 2004, 13:17:58
+
+Offer of work reading and discussing papers over the phone with blind
+intern at HP -- seems relevant and worth trying but shouldn't be
+allowed to swamp Simon's workload.  Work continuing on coding the main
+simulation; approaching the point where some test runs can be done.
+Simon has designed the code such that the properties of servers, the
+job list, etc., can all remain the same on repeated runs, and all that
+changes is the topology of connections between servers.  This will
+certainly allow a clear focus on the source of variation that we're
+really interested, i.e., network topology.  
+
+
+Friday 21 May 2004, 13:17:06
+
+Discussion of progress prompted by a review form that I had to fill
+in.  Simon continuing on coding for his simulation framework.
+Agreement that next Friday will be a deadline for Simon to have the
+code in a form where he can take me through it.  Also that the SAB
+conference in July will be a deadline for starting some production
+runs of the system.
+
+
+Friday 28 May 2004, 15:12:45
+
+Detailed review of Simon's work on implementing the simulation
+framework.  The basic concept is of events (e.g., arrival, depart)
+which are linked to message types, such as bids and offers, and which
+operate across a linked set of data structures: nodes, servers, and
+resources.  Nodes are simply points on the network, servers handle the
+business of sending and receiving messages, and resources reflect the
+state of a particular cluster or machine on the Grid.  
+
+The extendability of the framework looks excellent.  Performance is
+apparently very fast.  The remaining questions are to do with
+designing particular market mechanisms: to some extent, there are no
+right or wrong answers here, and Simon needs to investigate as many
+reasonable alternatives as he can.  
+
+Some questions:
+
+1) Where do jobs come from?  Taking inspiration from the real system,
+   we will declare that jobs originate at nodes, perhaps at a rate
+   proportional to the size of the resource at that node, although it
+   would also be possible to have a node that had zero resources and
+   lots of consumer demand, and vice versa.  
+
+2) Raises the sub-issue of how to model consumer demand.  The system
+   lends itself to studying a model of differential demand in two
+   sections of the network at different times, i.e., time zones.  
+
+3) Lots of different ways of running some sort of local auction across
+   such a network.  One simple option is to use the network as a
+   broadcasting channel, and then to wait for sealed bids to come in
+   directly from bidding node to selling node.  If we want a CDA, we
+   have to think about how to make sure bids are public.  We can treat
+   the originating node as the zero-order audience for the first
+   offer, and then treat all the neighbours of that node as the
+   first-order audience, all of those nodes' neighbours as the second
+   order, etc.  The zero-order audience captures the idea that it's
+   good to sort things out locally if possible.  With a highly
+   connected network, it might be possible to not go beyond the
+   first-order auction.  
+
+4) Lots of room for very complex multi-dimensional bids and offers in
+   the long run, e.g., a service agreement that specifies standard
+   payment, early bonus, and a late penalty, plus the various timings
+   involved.  This makes the system a lot harder to analyze, and makes
+   the calculations for accepting or rejecting a bid much trickier.
+   For starters we will stick with the idea that there is a standard 1
+   CPU unit worth of work, and that jobs are measured in integer
+   multiples of this for n time units.  Allocation is simple; there is
+   no reshuffling of the schedule to fit in a bigger job.
+
+5) How to model the delays inherent in sending and receiving the
+   control messages?  We could go all the way and model an input queue
+   at each server, the processing time for the message, and an output
+   queue.  This could capture details such as a extra penalty for
+   having to send too many messages in one time unit, etc.  Certainly
+   nodes that have a large number of connections should be
+   appropriately penalized and not allowed to communicate without
+   costs.  However, this fine level of detail is probably not needed.
+   A simple model in which incoming messages queue up and are dealt
+   with in a fixed time would probably do the trick.  A node with many
+   connections will simply build up a longer queue of incoming
+   messages.

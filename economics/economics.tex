@@ -1,0 +1,503 @@
+\chapter{Economic Resource Allocation} 
+\label{CHAPTER:ECON} 
+\centerline{\rule{149mm}{.02in}}
+\vspace{2cm}
+
+\section{Introduction and Overview}
+
+Economics is the study of the allocation of scarce resources between competing
+alternate uses. The allocation decision making is distributed amongst the many
+interested parties, whether individuals and organisations, with no overall
+central control.  It is driven by the availability of a resource (supply) and
+the need for that resource (demand). In particular, we are interested in
+\emph{microeconomics}, the study of individual traders' behaviour and
+interactions, and their aggregated effects. 
+
+
+We start with a summary of simple economic principles.  There is much published
+work within the field of economics, and we focus on specifically
+on decentralised economic mechanisms. Most real-world and theoretical economic
+studies are based on some centralised mechanism, and as such are not directly
+relevant to our study. Also covered in this chapter is a look at specific
+computational market-based control algorithms that have been developed in the
+last 20 years.
+
+\section{Modelling an Economic Market}
+
+The term 'market' is used to describe the interactions of traders trading a
+particular commodity. The are many different types of markets, selling many
+different products, but the basic principles of a market are well defined. Here
+we introduce some key concepts about economic markets, and go on to look at
+three key components of a market; the traders who act in the market, the rules
+of the market (auction mechanism) and a market place in which the interaction
+occurs.  Much of this section has been distilled from
+\cite{eco-nicholson00-microeconomics}
+
+\subsection{Supply, Demand, and Market Equilibrium}
+\label{SEC:ECON:EQUILIBRIUM}
+
+The basic model of supply and demand is well understood. A larger supply of a
+resource than demand for it will lead to the price falling as sellers of the
+resource compete with each other by offering lower prices to make a sale.
+Likewise, a high demand relative to supply would lead to the price rising as
+buyers compete to meet their demand.
+
+A key idea in microeconomics is that of market equilibrium. This is the price
+in a market for which the supply and demand are equal, and all supply of a
+resource is sold and all demand for that resource is met. Any other price would
+result in a surplus or shortfall of resource. The aggregate price of a
+transaction in a market will tend towards this point over time. The buyer does
+not want to spend any more than necessary to meet their demand, and sellers do
+not want to waste their own resources to produce resource that is not needed.
+It is an \emph{efficient} market. The further the aggregate price is from the
+equilibrium price, the more inefficient the market.
+
+Note that there is not always a equilibrium. Factors governing the nature of
+producing the resource, or other outside influences, can result in markets that
+have constant shortfall or surplus of resource. 
+
+A particular resource's supply and demand do not remain constant. As they
+change, the market price will track the equilibrium price, as this is in the
+interests of all traders individually. Thus a market will usually tend towards
+this 'optimal' efficiency. 
+
+The rate of change of demand and supply varies in different types of markets.
+Some are slow and static with well understood supply and demand models, such as
+traditional resources like stone and timber. Others are highly dynamic and volatile (e.g. stock, commodities). This
+difference in dynamism leads to many different types of market. A less dynamic
+market can use a longer process to agree on a price, for example, while a highly
+dynamic market needs to utilise a faster method. See section
+\ref{SEC:ECON:AUCTIONS} for more examples.
+
+This concept of an 'optimal' price for a particular supply/demand value is key
+in evaluating economic systems, particularly when a market is concerned with
+global allocative efficiency, as is the case in Grid systems.
+
+
+\subsection{Market Traders} 
+\label{SEC:ECON:TRADERS}
+
+Traders are the individual agents that participate in the market. A trader has
+to decide on a public quote to give to other traders, representing the value at
+which the trader is willing to trade. These quotes are communicated to other
+traders, and if a trader see a quote that is within there private valuation,
+they can accept the quote and exchange goods and money.
+
+In real world markets, traders are people, who make decisions about trading
+according to some internal rationale. It is this rationality which has been the
+focus of much study and investigation. How does a trader decide what to bid?
+What information is available to the trader to make the decision? How does the
+trader adapt to changes in demand/supply?
+
+Traders have the following basic characteristics;
+
+\begin{itemize} 
+  
+  \item{\emph{Self-interested}}
+
+    A trader is fundamentally selfish and interested in its own utility or
+    profit.  While traders can cooperate, they do so only to their own
+    advantage. No rational trader will knowingly trade at a loss
+
+  \item{\emph{Autonomous}}
+
+    A trader makes its own trading decisions, without the need for a central
+    authority. Often some sort of central authority is utilised, but it is not
+    essential.
+
+  \item{\emph{Limited resources}} 
+
+    A trader has basic limitations. They have a finite amount of resource to
+    sell or money to purchase resource. If traders had very large resources, an
+    economic system would be less necessary.
+
+  \item{\emph{Limited knowledge}}
+
+    The trader only has a limited view of the world: they are not omniscient.
+    This view is formed from two main sources; public information that can be
+    observed from the actions or communications of other traders, or is
+    provided by a central arbiter, and private information, such as their own
+    resources or valuation of a resource.
+
+  \item{\emph{A rationale}}
+
+    Traders have some way of using the information that they have to estimate
+    the market price and formulate a price to quote at. This can be modelled
+    mathematically for a mathematical model, or algorithmically for an agent
+    based one, and can range from the simple (e.g. constant valuation) to
+    highly complex (see \ref{SEC:ECON:TRADERS})
+
+\end{itemize}
+
+It is these characteristics that lend the trader metaphor to the grid
+environment, as there are many similarities between traders and resources and
+jobs, particularly in the self-interest of traders, jobs and resources.
+
+
+
+\subsection{Auctions}
+\label{SEC:ECON:AUCTIONS}
+
+An auction is a set of well understood rules or conventions by which to
+communicate quotes between traders and reach a price. Many forms have arisen
+over time that have varying characteristics as needed by a particular situation
+or market. The main recognised auction types, and the way in which they vary,
+are summarised below. Much of this review is based on
+\cite{eco-klemperer99-auction}.
+
+\subsubsection{Classical Auctions}
+
+There are four 'classical' auction types recognised in the literature, each
+involving a single seller, and multiple buyers, or vice-versa.
+
+\begin{itemize}
+
+  \item \emph{English} An English auction is one of the most commonly
+    recognised auction mechanisms.  It is a public auction with a single seller
+    selling a single resource and multiple competing buyers. The buyers start
+    quoting low and raise the quote until no other buyer is willing to quote
+    higher. The buyer with the highest quote wins the auction.  Often a central
+    independent 'auctioneer' is used to control the quote rises. The advantage
+    of an English auction is that it gets the highest price for the seller. It
+    is commonly used for very scarce and unique resources such as objects d'art
+    and large houses. In other words, high demand and low supply.
+
+  \item \emph{Dutch}\\
+    A Dutch auction is similar to the English auction in that there is a single
+    seller and multiple buyers, but the quoting is reversed. The seller starts high
+    and then repeatedly lowers the quote until the first buyer accepts the price.
+    It is very fast auction and is utilised in flower markets where speed is of the
+    essence.
+
+  \item \emph{Sealed-bid}\\
+    In sealed-bid auctions the traders submit private
+    quotes to a single opposing trader, who is a buyer with many sellers or
+    vice versa. The best quote (highest or lowest, depending on whether buying
+    or selling) wins the auction. Government contracts commonly use this form.
+    A variations of this is to make the bidding iterative in rounds, whith the
+    best bid of each round being communicated between rounds. 
+
+  \item \emph{Vickery}\\
+    The Vickery auction, or second price auction, is the same as a
+    sealed-bid auction, where the best bidder wins the auction, but at the
+    price of the second best bidder. This is semantically equivalent to an English
+    auction, where the best price is not actually quoted, the winner wins when
+    they offer just above the maximum price of the second best bidder.
+
+\end{itemize}
+
+\subsubsection{Other Auction Mechanisms}
+
+Retail auctions, or posted price auctions, are the most common, being used in
+most western consumer markets. The seller posts a price, and the buyer accepts or
+not, take it or leave it.  The seller adjust the posted price occasionally.
+This is used in high volume markets with low dynamics and is very scalable.
+A local supermarket is a prime example.
+
+Another auction mechanism that has been facilitated by computing power is the
+call auction. In a call auction, all traders submit their trade prices to a
+central independent ``order book''. The total market supply and demand are then
+calculated, along with the equilibrium price, and all traders simultaneously
+trade at this price. This is a fast and efficient market form that is common in
+finance markets, but is completely centralised in nature, as the central order
+system must be independent and trusted by all traders.
+
+\subsubsection{Double Auctions}
+
+A double auction is one where both buyers and sellers quote. The previous
+markets are 'single' auctions in this sense, as only the buyer or seller
+quotes, not both.  The most common form of this auction is a continuous double
+auction. This is a many-to-many auction, commonly used in stock market trading
+until the recently, when the advent of computing allowed more efficient
+mechanisms to be used. Such auctions occur in a shared common space, where a
+trader will shout out his quote, while simultaneously listening to quotes from
+both other buyers and sellers. He then adjusts his quote according to what he
+hears until his price meets that of an opposing trader and a trade is made.
+This has the advantage of being efficient in the sense of fast adaptation to the
+market equilibrium. It is used in highly dynamic markets such as stocks and
+commodities. A common stipulation, often called the New York Stock Exchange
+rule after its origin, requires that a quote persists after being given, and
+subsequent quotes must improve on that quote.
+
+\subsubsection{Summary}
+
+Many different auctions exist, and can vary in different ways:
+
+\begin{itemize}
+  \item quotes can be private or public;
+  \item quotes be communicated simultaneously or continuously;
+  \item quotes can be given by the buyers, sellers or both;
+  \item the number of quotes allowed can vary;
+  \item the number of participants: one-to-one/one-to-many/many-to-many;
+  \item the need for a central arbiter or not;
+\end{itemize}
+
+For our work, we will need auction mechanisms that can be decentralised, and
+are suited to the Grid environment, as well as the usual desirable properties
+such as efficiency.
+
+
+\subsection{Terminology}
+
+For the rest of this thesis, the following terms as defined as described below.
+
+quote: a price offered from one trader to another for an amount of resource
+
+bid: a price offered by a buyer to a seller
+
+offer: a price offered by a seller to a buyer
+
+transaction: a trade between two traders at an agreed on price
+
+market price: the current aggregate price of a transaction.
+
+equilibrium price: the theoretical price where supply and demand meet and the
+market is most efficient
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Computational Economics}
+\label{SEC:ECON:COMP_TRADERS}
+
+The basic equilibrium model described is section \ref{SEC:ECON:EQUILIBRIUM}
+above is tried and tested, and used frequently in the study of market behaviour
+and dynamics. It lends itself to the mathematical modelling of markets, where
+supply and demand functions can be specified and the model's equations solved
+to provide results. This has been the dominant form of modelling markets in the
+field of economics. However, many of these mathematical models have had to make
+assumptions about the market to retain mathematical tractability.  For
+instance, they may assume perfect rationality on the part of traders, or a
+perfectly random communication between traders.  It often requires fixed
+supply/demand curves, and thus it is difficult to individual model agents'
+adaption to changing market conditions. The final state of the market can be
+examined, but not the dynamic state as a market 'finds' equilibrium.  This is
+very much a 'top-down' model, attempting the capture the entire behaviour of a
+system in concrete manner.
+
+The field of experimental economics represents a different approach to
+understanding markets, and was established by Vernon Smith in
+1962\cite{eco-smith62-competitive}. He created a simple experimental market,
+and used real human traders to explore market dynamics. This approach allows
+individual trader behaviour to be examined, which the mathematical models do
+not.
+
+With the emergence of cheap and accessible computation now available to
+researchers, experimental computational modelling has become increasingly
+popular in economics during the last 20 years. Whereas the size and complexity
+of experiments in earlier work was tied to human limitations, copmutational
+agents allow for many more options. Markets can actually be fully simulated and
+traced, and the behaviours of individual traders defined and examined. This
+allows us to look at the above assumptions in great detail, and study more
+complex questions that were not feasible with previous models. They can provide
+more detail about the rich dynamics that can be present in economic systems.  
+
+This approach is a 'bottom-up' model, as the individual agents give rise to
+system-level behaviour. It allows us to observe details like robustness and
+individual traders actions, and explore areas that were previously infeasible to
+examine.
+
+
+\subsection{Modelling Human Traders}
+
+Every year since 1999, the Trading Agent Competition\cite{eco-wellman99-tac}
+has been held as the primary forum for research into trading agents.  The
+competition's market is a complex multi-market simulation of a travel and
+leisure economy, where traders compete to purchase flights, accommodation and
+entertainment as holiday packages.  Successful agents have including
+SouthamptonTAC\cite{eco-he05-tada}, and Walverine\cite{eco-cheng05-walverine}.
+
+The paradigm for these agents it a 'top-down' approach to artificial
+intelligence. That is, they attempt to capture human thought patterns at a high
+level, and develop methods of implementing similar strategies computationally.
+This means that the architecture of these agents is often sophisticated and
+multi-layered, as human strategies are often complex and intricate.
+Additionally, these agents are designed for a specific market that is well
+defined and implemented.
+
+Whilst it would be potentially feasible to implement similar algorithms in our
+exploratory work, the agents are complex to implement and would require
+refactoring to be more general. Therefore, we look to a different approach for
+trader rationale than the TAC-orientated algorithms.
+
+\subsection{Simple Trading Agents}
+\label{SEC:ECON:ZI}
+
+Gode and Sunder\cite{eco-gode93-zi} investigated the effect of rationality in
+market performance. They formulated a Zero-Intelligence (ZI) trader model,
+where agents bid randomly in a double auction market, with the constraint that
+the traders' random bids must be within their limit prices (ZI Constrained, or
+ZI-C). They found that even with no bidding strategy, markets with ZI-C traders
+still reached equilibrium, and proposed that market structure was a partial
+substitute for trader rationality. This model has been much investigated, and
+been used as a baseline market predictor \cite{eco-farmer05-predictive} amongst
+further investigations into general market efficiency
+\cite{eco-gode97-efficiency}.
+
+Cliff explored ZI traders further \cite{eco-cliff97-minimal},
+\cite{eco-cliff97-zip} showing market situations in which ZI-C traders failed
+to find equilibrium, such as markets with constant supply or demand curves.
+This suggest that the accurate equilibriums reached by ZI-C traders were
+artefacts of the original simulation supply and demand distributions. He
+proposed an improved trading algorithm, called Zero Intelligence Plus, or ZIP
+traders. ZIP traders use a simple error descent learning rule to adjust a
+trader's perceived market price relative to their limit price. He found that
+ZIP traders out performed ZI-C in finding market equilibrium, and were also
+able to successfully find equilibrium in the market environments in which ZI-C
+traders were unsuccessful. He went on to further optimise the ZIP algorithm
+\cite{eco-cliff01-evolution} using evolutionary optimisation, including
+developing a novel partially-double auction mechanism. 
+
+In a similar development, the Gjerstad-Dickhaut (GD) trader model was
+introduced in \cite{eco-gjerstad98-gd}, which defined a ``belief'' function for
+a trader, representing a traders belief in the current market price.   This
+function was calculated using a window of recent successful market
+transactions, and used to select a price that would maximize utility. The GD
+model has been extended by others, using dynamic programming to formulate the
+belief function (GD eXtended or GDX)\cite{eco-tesauro02-gdx}, and by using
+unsuccessful transactions as well as successful ones (Modified GD or MGD)
+\cite{eco-tesauro01-mgd}. 
+
+All the trading algorithms described above were developed using a small double
+auction market with around 20 traders, and all-to-all connections between
+traders, which whilst simple, which would not be feasible in a large scale.
+Additionally, the bidding was conducted in distinct syncronised rounds and the
+trading was split into trading days, after the real-world experimental
+economics that it was based upon. However, Cliff found ZIP traders to work in
+continuous trading environments \cite{eco-cliff01-days}, which would be
+necessary for use in our grid environment.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Market Based Control}
+
+Market Based Control is the field of Artificial Intelligence that looks at
+using economic principles in system design, first proposed as a methodology by
+Miller and Drexler under the moniker ``agoric open systems''
+\cite{eco-miller88-markets} as a part of a collection of papers published in 1988
+entitled ``The Ecology of Computation'', edited by Bernado Huberman
+\cite{eco-huberman88-ecology}. Huberman also included some real world
+implementations or economic systems, which are discusseb below along with other
+related work. 
+
+\subsection{Previous Work}
+
+The Enterprise mechanism \cite{eco-malone88-enterprise} was an early job
+allocation system that utilised a decentralised, first-price, seller quotes,
+single-round, sealed-bid auction who's price metric was estimated job
+completion time, with a cancellation protocol. This was optimised toward mean
+job flow rate, or throughput, and compared favourably to comparable systems at
+the time.  It utilised an all-to-all communication network, which scaled well
+up to 90 machines. However, such a system would eventually hit a limit of
+communication overheads for its all-to-all connections, especially if some
+machines were located non-local networks with increased communication costs,
+particularly for broadcasting communication. This limits its potential
+scalability. Additionally, using a user supplied completion time as a price
+metric encouraged users to be dishonest in their estimates in order to get
+quicker scheduling, and while they addresses this with a penalty mechanism, it
+would be a potential problem in applying their solution to the grid.
+
+Drexler and Miller presented a similar scheme\cite{eco-drexler88-crm}. They
+used a rental model to share a single machines processor and storage resources
+using a sealed-bid second price auction through simulation. The include a
+method of escalating bid prices over time to ensure a degree of fairness and to
+provide opportunities to change a process's current bid.  The design was
+specific to a single machine, dealing with garbage collection and pointer
+management, but is an explorative study on the potential for economics systems,
+but uses a much lower level model of computation that the grid.
+
+Similar to to the Enterprise project, Waldspurger \textit{et al} developed
+Spawn, a distributed computational economic allocation
+system\cite{eco-waldspurger92-spawn}. This used multiple decentralised
+single-round sealed-bid second-price auctions to allocate idle resource time.
+It included a sophisticated sponsorship hierarchy for allocating a complex job
+across multiple auctions. Whilst decentralised, it was not tested on large
+numbers of machines and used an single domain all-to-all communication network
+for trading, although it discusses the possibility of scaling using a random
+network.
+
+In 1996 Scott Clearwater reviewed several later MBC systems
+\cite{eco-clearwater96-mbc}, that built upon this idea, including systems to
+auction network bandwidth, computer memory, and factory jobs, as well as an
+innovative system at Xerox P.A.R.C for trading air-conditioning resources
+between buildings. These systems used differing auctions and trader
+rational, however, they all relied on a centralised auction mechanism that
+required a complete global view of the market. 
+
+%Microeconomic?
+%UDC?
+
+
+\subsection{Summary}
+
+A common factor to all the systems discussed in this section, with the notable
+exceptions of Enterprise and Spawn, is that they are centralised in nature,
+requiring a auctioneer process.  This centralisation loses some of the
+potential benefits of an economic system and imposes severe limitations on
+scalability, which is key for any grid-sized market.  
+
+Additionally, the type of auction mechanism used is more often than not some
+variation of a call auction which requires a global market view and thus cannot
+be decentralised, as well as being highly computationally intensive.
+
+Many are also specifically designed for particular applications and specific
+markets, and would be difficult to generalise to a grid type market.
+
+Whilst the basic inspiration for these systems has been economics, they do not
+take full advantage of the potential for decentralised markets. This is
+understandable, as such markets face implementation challenges, with a central
+approach being much simpler initially. They all operate with in  a single
+administrative domain, unlike the grid environment, with has multiple
+competing domains participating. 
+
+Of the two that utilise a decentralised market (Enterprise and Spawn), both
+rely on a local all-to-all communication, which whilst enabling the
+decentralisation, is not scalable, especially to non-local resources.
+Additionally, both approaches are based on pre-grid concepts of resources and do
+not utilise the recent technologies that have been developed by research on
+the grid.
+
+
+\section{Existing Grid Economic Models}
+\label{SEC:ECON:GRIDECON}
+
+The idea of an economic model for grid computing is not new. A review of
+distributed economic systems is presented in\cite{grid-buyya02-economic} Buyya
+\textit{et al} outline the various potential auction strategies for a grid
+market place, similar to those outlined here, and provides an overview of some
+distributed economic allocation systems. Most of these systems are designed for
+a specific purpose, and require administrative control over the resources, and
+as such are not applicable to a grid system. 
+
+Nimrod/G \cite{grid-buyya00-nimrod-g}\cite{grid-abramson02-nimrod-g} is the only
+economic system designed specifically for the grid environment.  It allows
+users to define a maximum cost and execution deadline, and resources define a
+base cost. The scheduler uses MDS to discover potential resources and their
+associated costs, and uses a cost-deadline optimisation
+algorithm\cite{grid-buyya02-dbc} to select suitable resources.  The cost and
+estimated completion time for these resource time is passed back to the user,
+who can then adjust their cost or deadline amounts if desired, or accept the
+allocation and dispatch the job. The resource prices are set manually by
+resource owners based upon their own perception of market demand. It does
+support advanced reservation in this way.
+
+Nimrod/G thus acts as an economic facilitator with humans as the traders, and
+effectively a posted price/retail auction mechanism. This has the potential to
+scale well, as retail auctions do, but will be less effective in more dynamic
+markets, where faster adaptation to changing supply/demand is required.
+Additionally, the trader strategy relies on human interaction, and therefore
+is not automatic, and is not as performant or as scalable as
+utilising computational agents to automate the bidding process. It is also
+based around a centralised resource discovery mechanism (Globus' MDS), which
+further limits its scalability.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Summary}
+
+The unique challenges of grid systems present a close match with the challenges
+economic systems have evolved to solve, namely a scalable method of allocating
+scarce resource amongst self-interested parties. It allows for non-trusting
+parties to co-operate in a decentralised and robust manner. This suggests the
+economic model of allocation as a good fit to the grid allocation problem.

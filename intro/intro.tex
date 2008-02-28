@@ -1,0 +1,180 @@
+\chapter{Introduction}
+\label{CHAPTER:INTRO}
+\centerline{\rule{149mm}{.02in}}
+\vspace{2cm}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Motivation}
+
+\subsection{Computational Grids}
+
+The area of ``grid computing'' is a recent development from the last 20 years
+of research into computing resource provision.  It denotes a concept of
+computers as a utility, where computational resource can be provided as-and-when
+needed transparently to large numbers of people. It is similar in concept to
+other utilities, such as water or electricity, indeed the grid name owes in
+part to its similarity in concept to the National Grid. A grid system would
+allows users to utilise massive compute resources in as easily and as
+transparently as we plug something into a socket at home and turn it on.
+
+While allowing different people to use computing resources is nothing new, the
+grid concept takes the concept to a new level, in several ways. Firstly, the
+sheer scale is much larger. Previously, a few hundred machines, or at the most
+a few thousand, have been harnessed together in some sort of grid-like system.
+The grid concept takes these numbers in to the tens of of thousand, or even
+millions. Secondly, and more importantly, it relies on the sharing of multiple
+resources owned and administered by different organisations or individuals.  In
+previous resource sharing systems, the resources are all owned by a single
+entity. Grid computing, however, aims to allow many resource-owners to
+participate in sharing their resources together in a single unified manner.
+This is the ultimate aim of grid computing, and presents some majors
+challenges for researchers of grid computing. Arguably the most significant of
+these, and the one with the fewest practical solutions, is resource allocation.
+
+In a grid environment, a resource is some computational facility which users
+wish to utilise for their applications and programs. The challenges of deciding
+what users run which applications on whose resources are significant,
+especially in the face of huge numbers of resources and different
+administrative domains. Additionally, to achieve the full potential of
+grid computing, resource allocation needs to be done in a fast, automatic,
+robust and scalable manner.  
+
+The current dominant approach is to have a central point that maintains the
+state of all resources on the grid, and provides ways of selecting suitable
+resources to use. This is the historical approach to allocating computing
+resources, as most computational systems are centralised in nature. However,
+this method is not particularly automatic, scalable or robust, at least in
+current implementations, especially when you start to scale to thousands of
+resources. Current resource allocations systems do not deliver the necessary
+resource allocation capabilities to fulfil the aims the grid concept.
+
+
+\subsection{Economic Resource Allocation}
+
+The problem of allocating scarce resources is one that has ever been present in
+history. A resource is scarce if there is not enough supply of that resource to
+meet the corresponding demand for it.  The raw method used by nature for
+allocating such resources is though competition and survival.  Humans have
+developed more sophisticated systems for facilitating this allocation, namely
+economics.
+
+Economics provides a system for allocating scarce resources between different
+parties using understood mechanisms to swap (trade) one resource for another,
+usually money in exchange for some other resource.  Many varying and complex
+economic systems have arisen of the centuries of human history to facilitate
+the exchange of scarce goods, and in recent centuries, these system have been
+much examined in their function and performance. The particular advantages of
+economic systems are that they are adaptive to change, and highly scalable and
+robust.  However, they do not guarantee an optimal allocation.
+
+They property of economic systems that gives rise to these factors is that they
+are essentially decentralised. Whilst many existing economic systems utilise a
+central mechanism for efficiency or simplicity, base economic systems developed
+from individuals acting independent of any central imperative. This
+decentralisation is present in two distinct ways. Firstly, individual
+participants in an economic system, that is, the traders, are self-interested.
+The system simply provides them with an incentive to trade. There is no
+mandated co-operation, other than conforming to the common trading protocol,
+each individual agent is its own master, and utilises its own resources to
+participate in the trading.  Secondly, no single trader has a complete picture
+of the whole system.  Traders have knowledge of their own needs or resources
+which is known only to themselves. Additionally, traders usually only
+participate in a subset of all the trade interactions occurring in the system,
+and thus have only a limited knowledge of other's trades.  Yet despite these
+limitations, the interactions of many traders give rise to a global system
+behaviour that has useful properties, especially when applied to the grid
+environment.
+
+\subsection{An Economic Grid}
+
+There is a clear parallel between the needs of a resource allocation mechanism
+for grid systems and the economic resource allocation paradigm. An economic
+system for allocating resources on a grid could provide the scalability and
+robustness required to achieve the grid concept, and overcome the limits of
+current approaches.  It it also well suited to the problem of multiple
+autonomous domains, as each resource can act as a self-interested agent in an
+intuitive manner. It could provide a natural revenue model for for grid
+systems, and area which is still largely speculation.
+
+In order to achieve the potential scalability and robustness benefits of and
+economic system, it needs to be as decentralised as possible. Such a system
+would very different from the current approaches, representing an orthogonal
+approach to grid resource allocation. If such a system could be implemented, it
+could provide the necessary transparency and scalability needed to implement a
+working grid system that embodies the aims of the grid concept.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Objectives}
+
+This thesis explores the potential for a fully decentralised economic resource
+allocation scheme for a computational grid. The key objectives of this thesis
+are as follows.
+
+\begin{itemize}
+
+  \item To provide a detailed description of economic mechanism, and examine
+    their suitability for use in a grid environment.
+    
+  \item To propose a fully decentralised economic allocation mechanism for
+    grid systems.
+
+  \item To implement a simulation tool with a suitable a model of a grid system
+    for examining the proposed mechanism.
+
+  \item To implement the proposed allocation mechanisms in simulation, and
+    analyse for functionality and performance, and suggest areas for future
+    investigation.
+
+\end{itemize}
+
+
+\section{Thesis Contribution}
+
+Whilst economic allocation schemes for computational resources and grid systems
+have been developed previously, they are all centralised in nature, thus losing
+some of the potential benefits of using such systems. The main contribution of
+this work is explore the potential of a fully decentralised system, which is a novel
+approach, especially in the grid field. We show that such an approach is not
+only feasible, but has various advantages over the current approach.
+
+In aiming to keep the system as simple as feasible, we also add to the
+discussion on the relationship between trader rationale and market structure.
+See section \ref{SEC:ECON:ZI} for more details.
+
+We also apply network theory to our economic model. In most computational economic
+systems, communication between traders is assumed to be either all-to-all or
+random in nature. We look at different topologies for communication between
+traders, and apply these findings to much larger networks than have previously
+been studied.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Thesis Overview}
+
+In Chapter \ref{CHAPTER:GRID} we review the literature from the field of grid
+computing, including the history and motivation of the grid concept, as well as
+a critique of the current solutions to resource allocation.
+
+In Chapter \ref{CHAPTER:ECON}, we review basic economic theory and examines
+previous work in modelling economic systems computationally, as well as existing
+work applying economics principles to computational resource management.
+
+Chapter \ref{CHAPTER:NETWORKS} take a brief look at the field of statistical
+network theory, including a variety of network types and properties.
+
+Chapter \ref{CHAPTER:METHOD} outlines our proposed investigation, including a
+basic model of a grid system, and presents a simple economic model for
+market system and trader rational
+
+In Chapter \ref{CHAPTER:RESULTS} we present the experiment details and initial
+findings based on the proposed solution in the previous chapter.
+
+In the final chapter, Chapter \ref{CHAPTER:CONCLUSION} concludes the study,
+summarising the results findings and suggests areas for future work.
+
+
